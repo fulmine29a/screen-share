@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Screen Share server</title>
+</head>
+<body>
+<h1>Screen Share server</h1>
+<pre
+        class="error"
+        id="error"
+        hidden
+        style="color:red;"
+></pre>
+<div
+        id="waiting"
+        hidden
+        style="color:orange;font-weight: bold;font-size: 150%;"
+>WAITING
+</div>
+<div
+        id="online"
+        hidden
+        style="color:green;font-weight: bold;font-size: 150%;"
+>ONLINE
+</div>
+<div>
+    <textarea
+            id="offerText"
+            rows="20"
+            cols="100"
+            readonly
+    ></textarea>
+    <textarea
+            id="answerText"
+            rows="20"
+            cols="100"
+    ></textarea>
+    <textarea
+            id="candidates"
+            cols="100"
+            rows="20"
+    ></textarea>
+</div>
+<button onclick="start()">Start</button>
+<button onclick="setCandidates()">set candidates</button>
+<video
+        id="video"
+        style="max-width: 100%; height: 20vh;margin-top: 1em;"
+></video>
+<script type="text/javascript">
+  let connection = new RTCPeerConnection( { iceServers : [ { urls : 'stun:stun.l.google.com:19302' } ] } );
+
+  function showError( msg ) {
+    const formattedMsg = '' + msg;
+
+    console.error( formattedMsg );
+    error.innerText += formattedMsg + '\n';
+    error.hidden = false;
+  }
+
+  (async function () {
+    if ( navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia ) {
+      try {
+        const screenStream = await navigator.mediaDevices.getDisplayMedia();
+
+        video.srcObject = screenStream;
+        video.play();
+
+        screenStream.getTracks().forEach( track => connection.addTrack( track ) );
+
+        const offer = await connection.createOffer();
+        await connection.setLocalDescription( offer );
+
+        offerText.value = JSON.stringify( offer );
+
+        waiting.hidden = false;
+      } catch ( e ) {
+        showError( e );
+      }
+    } else {
+      showError( 'unsupported browser' );
+    }
+  })();
+
+  async function start() {
+    try {
+      connection.onconnectionstatechange = function () {
+        if ( this.connectionState == 'connected' ) {
+          waiting.hidden = true;
+          online.hidden = false;
+        }
+      };
+      await connection.setRemoteDescription( JSON.parse( answerText.value ) );
+    } catch ( e ) {
+      showError( e );
+    }
+  }
+
+  async function setCandidates() {
+    candidates.value.split( ';' ).filter( Boolean ).forEach( candidate => connection.addIceCandidate( new RTCIceCandidate( JSON.parse( candidate ) ) ) );
+  }
+</script>
+</body>
+</html>

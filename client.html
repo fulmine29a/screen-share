@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Screen Share client</title>
+</head>
+<body>
+<h1>Screen share client</h1>
+<textarea
+        id="offer"
+        cols="100"
+        rows="20"
+></textarea>
+<textarea
+    id="answer"
+    cols="100"
+    rows="20"
+    readonly
+></textarea>
+<textarea
+        id="candidates"
+        cols="100"
+        rows="20"
+        readonly
+></textarea>
+<pre class="error" id="error" hidden style="color:red;"></pre>
+<button onclick="generateAnswer();">Generate answer</button>
+<div id="videos"></div>
+<script type="text/javascript">
+  function showError(msg){
+    const formattedMsg = '' + msg;
+
+    console.error(formattedMsg);
+    error.innerText+= formattedMsg + '\n';
+    error.hidden = false;
+  }
+    async function generateAnswer(){
+      try {
+        const connection = new RTCPeerConnection( { iceServers : [ { urls : 'stun:stun.l.google.com:19302' } ] } );
+        connection.ontrack = function ( {track} ){
+          const stream = new MediaStream([track]);
+          const videoEl = document.createElement('VIDEO');
+          videoEl.srcObject = stream;
+          videos.appendChild(videoEl);
+          videoEl.play();
+        };
+        await connection.setRemoteDescription(JSON.parse(offer.value));
+        const answerDescription = await connection.createAnswer()
+
+        connection.onicecandidate = function ( {candidate} ) {
+          if(candidate) {
+            candidates.value += JSON.stringify(candidate) + ';'
+          } // else -- end of list
+        }
+
+        await connection.setLocalDescription(answerDescription);
+        answer.value = JSON.stringify(connection.currentLocalDescription);
+      }catch ( e ) {
+        showError(e)
+      }
+    }
+</script>
+</body>
+</html>
