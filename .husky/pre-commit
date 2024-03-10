@@ -1,0 +1,2 @@
+./node_modules/.bin/prettier -c src
+./node_modules/.bin/eslint src
