@@ -16,19 +16,6 @@ if (!nodeEnv) {
 
 const isDev = nodeEnv == "development";
 
-const babelOptions = {
-  presets: [
-    "react",
-    [
-      "es2015",
-      {
-        modules: false,
-      },
-    ],
-    "es2016",
-  ],
-};
-
 module.exports = {
   module: {
     rules: [
@@ -38,7 +25,9 @@ module.exports = {
         use: [
           {
             loader: "babel-loader",
-            options: babelOptions,
+            options: {
+              presets: ["react", "@babel/preset-env"],
+            },
           },
           {
             loader: "ts-loader",
