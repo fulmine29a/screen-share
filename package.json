@@ -2,7 +2,6 @@
   "name": "screen-share",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "repository": {
     "url": "https://github.com/fulmine29a/screen-share"
   },
