@@ -1,3 +1,4 @@
 ./node_modules/.bin/prettier -c src
 ./node_modules/.bin/eslint src
 ./node_modules/.bin/jest
+./node_modules/.bin/tsc --noEmit

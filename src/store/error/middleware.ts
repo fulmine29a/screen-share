@@ -26,5 +26,5 @@ export const thunkErrorHandingMiddleware: Middleware =
       }
     }
 
-    next(action);
+    return next(action);
   };

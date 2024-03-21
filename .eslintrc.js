@@ -19,7 +19,7 @@ module.exports = {
       },
     },
     {
-      files: ["tests/**/*", "*.test.*"],
+      files: ["__mock__/**/*", "tests/**/*", "*.test.*"],
       env: {
         jest: true,
       },
