@@ -7,6 +7,9 @@ import {
 } from "../app-events";
 import { getStringMessageFromUnknownError } from "../../utils/getStringMessageFromUnknownError";
 import { OfferOrAnswer } from "./types";
+import { controlChannelSet } from "../control-channel/thunks";
+
+export const CONTROL_DATACHANNEL = "control-datachannel";
 
 export const connectionAppStart = createAppThunk(
   "connectionAppStart",
@@ -34,9 +37,12 @@ export const connectionCreateServer = createAppThunk(
     }
 
     try {
+      const dc = connection.createDataChannel(CONTROL_DATACHANNEL);
+
       const offer = await connection.createOffer();
       await connection.setLocalDescription(offer);
-      dispatch(connectionSlice.actions.setSearchCandidates(offer));
+      dispatch(connectionSlice.actions.setSearchCandidates());
+      dispatch(controlChannelSet(dc));
     } catch (e) {
       dispatch(
         connectionSlice.actions.setFailed(
@@ -62,10 +68,7 @@ export const connectionServerSetAnswer = createAppThunk(
     }
 
     try {
-      await connection.setRemoteDescription(answer.description);
-      for (const candidate of answer.candidates) {
-        await connection.addIceCandidate(new RTCIceCandidate(candidate));
-      }
+      await connection.setRemoteDescription(answer);
     } catch (e) {
       dispatch(
         connectionSlice.actions.setFailed(
@@ -91,15 +94,11 @@ export const connectionCreateClient = createAppThunk(
     }
 
     try {
-      await connection.setRemoteDescription(offer.description);
+      await connection.setRemoteDescription(offer);
       const answer = await connection.createAnswer();
       await connection.setLocalDescription(answer);
 
-      dispatch(connectionSlice.actions.setSearchCandidates(answer));
-
-      for (const candidate of offer.candidates) {
-        await connection.addIceCandidate(new RTCIceCandidate(candidate));
-      }
+      dispatch(connectionSlice.actions.setSearchCandidates());
     } catch (e) {
       dispatch(
         connectionSlice.actions.setFailed(
@@ -122,15 +121,13 @@ export const connectionSetCandidatesEventListener = createAppThunk(
       );
     }
 
-    const candidates: RTCIceCandidateInit[] = [];
-
     connection.addEventListener(
       "icecandidate",
-      ({ candidate }: RTCPeerConnectionIceEvent) => {
-        if (candidate) {
-          candidates.push(candidate.toJSON());
-        } else {
-          dispatch(connectionSlice.actions.setCandidatesFound(candidates));
+      function ({ candidate }: RTCPeerConnectionIceEvent) {
+        if (!candidate) {
+          dispatch(
+            connectionSlice.actions.setCandidatesFound(this.localDescription),
+          );
         }
       },
     );

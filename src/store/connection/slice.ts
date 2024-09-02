@@ -15,27 +15,25 @@ export const connectionSlice = createSlice({
     setCreated: () => {
       return { status: "CREATED" as const };
     },
-    setSearchCandidates: (
-      state,
-      { payload }: PayloadAction<RTCSessionDescriptionInit>,
-    ) => {
+    setSearchCandidates: () => {
       return {
-        status: "SEARCH_FOR_CANDIDATES",
-        localDescription: payload,
+        status: "SEARCH_FOR_CANDIDATES" as const,
       };
     },
     setCandidatesFound: (
       state,
-      { payload }: PayloadAction<RTCIceCandidateInit[]>,
+      { payload }: PayloadAction<RTCSessionDescriptionInit | null>,
     ) => {
       if (state.status != "SEARCH_FOR_CANDIDATES") {
         throw new Error("attempt to set candidates from the wrong status");
       }
+      if (!payload) {
+        throw new Error("attempt to set empty local sdp");
+      }
 
       return {
         status: "CANDIDATES_FOUND",
-        candidates: payload,
-        localDescription: state.localDescription,
+        localDescription: payload,
       };
     },
     setConnected: () => ({ status: "CONNECTED" }) as const,
@@ -50,10 +48,6 @@ export const connectionSlice = createSlice({
     status: (state) => state.status,
     failReason: (state) => state.status == "FAILED" && state.failReason,
     localDescription: (state) =>
-      (state.status == "SEARCH_FOR_CANDIDATES" ||
-        state.status == "CANDIDATES_FOUND") &&
-      state.localDescription,
-    candidates: (state) =>
-      state.status == "CANDIDATES_FOUND" && state.candidates,
+      state.status == "CANDIDATES_FOUND" && state.localDescription,
   },
 });

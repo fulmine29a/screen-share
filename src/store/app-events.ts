@@ -3,6 +3,7 @@ import {
   connectionAppStart,
   connectionAppStop,
   connectionSetCandidatesEventListener,
+  connectionSetStatusEventListener,
 } from "./connection/thunks";
 
 export const appStart = createAppThunk("appStart", async (_, { dispatch }) => {
@@ -13,6 +14,7 @@ export const appConnectionCreated = createAppThunk(
   "appConnectionCreated",
   async (_, { dispatch }) => {
     dispatch(connectionSetCandidatesEventListener());
+    dispatch(connectionSetStatusEventListener());
   },
 );
 

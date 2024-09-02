@@ -34,16 +34,6 @@ class RTCPeerConnection extends EventTarget {
     return Promise.resolve(true);
   }
 
-  addIceCandidate = jest.fn(async (candidate) => {
-    if (candidate && candidate.candidate) {
-      if (candidate instanceof RTCIceCandidate) {
-        this.iceCandidates.push(candidate);
-      } else {
-        throw new Error("candidate must be instance of RTCIceCandidate");
-      }
-    }
-  });
-
   setRemoteDescription(description) {
     this.remoteDescription = description;
     if (description.type == "answer") {
@@ -55,6 +45,10 @@ class RTCPeerConnection extends EventTarget {
   close() {
     this.iceConnectionState = "closed";
     this.connectionState = "closed";
+  }
+
+  createDataChannel(name) {
+    return new RTCDataChannel(name);
   }
 }
 
