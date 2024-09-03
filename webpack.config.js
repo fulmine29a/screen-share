@@ -39,6 +39,7 @@ module.exports = {
   devServer: {
     server: "https",
   },
+  devtool: "eval-source-map",
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
   },

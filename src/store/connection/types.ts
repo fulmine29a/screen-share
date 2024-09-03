@@ -6,8 +6,11 @@ export type ConnectionState =
   | { status: "FAILED"; failReason: string }
   | {
       status: "CANDIDATES_FOUND";
-      localDescription: RTCSessionDescriptionInit;
-    };
+      localDescription: string;
+    }
+  | { status: "CONNECTED" }
+  | { status: "DISCONNECTED" }
+  | { status: "CLOSED" };
 
 export type OfferOrAnswer = RTCSessionDescriptionInit;
 

@@ -8,6 +8,8 @@ import {
 import { getStringMessageFromUnknownError } from "../../utils/getStringMessageFromUnknownError";
 import { OfferOrAnswer } from "./types";
 import { controlChannelSet } from "../control-channel/thunks";
+import { errorSlice } from "../error/slice";
+import { errorToAppError } from "../error/utils";
 
 export const CONTROL_DATACHANNEL = "control-datachannel";
 
@@ -124,9 +126,19 @@ export const connectionSetCandidatesEventListener = createAppThunk(
     connection.addEventListener(
       "icecandidate",
       function ({ candidate }: RTCPeerConnectionIceEvent) {
-        if (!candidate) {
+        try {
+          if (!candidate) {
+            dispatch(
+              connectionSlice.actions.setCandidatesFound(
+                JSON.stringify(this.localDescription),
+              ),
+            );
+          }
+        } catch (e) {
           dispatch(
-            connectionSlice.actions.setCandidatesFound(this.localDescription),
+            errorSlice.actions.add(
+              errorToAppError(e, "error in icecandidate listener"),
+            ),
           );
         }
       },
@@ -142,8 +154,26 @@ export const connectionSetStatusEventListener = createAppThunk(
     }
 
     connection.addEventListener("connectionstatechange", function () {
-      if (this.connectionState == "connected") {
-        dispatch(connectionSlice.actions.setConnected());
+      try {
+        switch (this.connectionState) {
+          case "connected":
+            dispatch(connectionSlice.actions.setConnected());
+            break;
+          case "disconnected":
+            dispatch(connectionSlice.actions.setDisconnected());
+            break;
+          case "failed":
+            dispatch(connectionSlice.actions.setFailed("connection lost"));
+            break;
+          case "closed":
+            dispatch(connectionSlice.actions.setClosed());
+        }
+      } catch (e) {
+        dispatch(
+          errorSlice.actions.add(
+            errorToAppError(e, "error in connectionstatechange handler"),
+          ),
+        );
       }
     });
   },

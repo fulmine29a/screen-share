@@ -73,7 +73,9 @@ export const App: React.FC = () => {
           <dd>{failReason || "none"}</dd>
           <dt>localDescription</dt>
           <dd>
-            <pre>{JSON.stringify(localDescription, null, 2)}</pre>
+            <pre>
+              {JSON.stringify(JSON.parse(localDescription || "{}"), null, 2)}
+            </pre>
           </dd>
         </dl>
       </div>

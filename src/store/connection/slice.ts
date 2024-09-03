@@ -20,10 +20,7 @@ export const connectionSlice = createSlice({
         status: "SEARCH_FOR_CANDIDATES" as const,
       };
     },
-    setCandidatesFound: (
-      state,
-      { payload }: PayloadAction<RTCSessionDescriptionInit | null>,
-    ) => {
+    setCandidatesFound: (state, { payload }: PayloadAction<string | null>) => {
       if (state.status != "SEARCH_FOR_CANDIDATES") {
         throw new Error("attempt to set candidates from the wrong status");
       }
@@ -37,12 +34,14 @@ export const connectionSlice = createSlice({
       };
     },
     setConnected: () => ({ status: "CONNECTED" }) as const,
+    setDisconnected: () => ({ status: "DISCONNECTED" }) as const,
     setFailed: (state, { payload }: PayloadAction<string>) => {
       return {
         status: "FAILED",
         failReason: payload,
       };
     },
+    setClosed: () => ({ status: "CLOSED" }) as const,
   },
   selectors: {
     status: (state) => state.status,
