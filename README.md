@@ -5,9 +5,8 @@ Peer to peer screen sharing using WebRTC.
 ## Prepare
 
 ```bash
-npm install --force
+npm install
 ```
-The "force" key is used because the "react-refresh" library does not currently support webpack 5. After it is updated, this can be removed.
 
 ## Usage
 
