@@ -6,6 +6,8 @@ module.exports = {
     "./__mock__/rtc-data-channel.js",
     "./__mock__/rtc-peer-connection.js",
     "./__mock__/rtc-ice-candidate.js",
+    "./__mock__/media-stream-track.js",
+    "./__mock__/media-stream.js",
   ],
   clearMocks: true,
 };

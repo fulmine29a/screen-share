@@ -6,12 +6,14 @@ import {
 import { errorSlice } from "./error/slice";
 import { thunkErrorHandingMiddleware } from "./error/middleware";
 import { connectionSlice } from "./connection/slice";
+import { streamSlice } from "./streams/slice";
 
 export function createStore() {
   return configureStore({
     reducer: {
       error: errorSlice.reducer,
       connection: connectionSlice.reducer,
+      streams: streamSlice.reducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().prepend(thunkErrorHandingMiddleware),

@@ -16,7 +16,6 @@ export const App: React.FC = () => {
     connectionSlice.selectors.localDescription,
   );
 
-  const [remoteCandidates, setRemoteCandidates] = useState("");
   const [remoteDescription, setRemoteDescription] =
     useState<RTCSessionDescriptionInit>({ sdp: "", type: "offer" });
 
@@ -55,14 +54,6 @@ export const App: React.FC = () => {
                 setRemoteDescription(JSON.parse(value))
               }
               value={JSON.stringify(remoteDescription, null, 2)}
-            ></textarea>
-          </dd>
-          <dt>remote candidates</dt>
-          <dd>
-            <textarea
-              rows={10}
-              onChange={({ target: { value } }) => setRemoteCandidates(value)}
-              value={remoteCandidates}
             ></textarea>
           </dd>
         </dl>
