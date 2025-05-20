@@ -68,18 +68,11 @@ describe("streamsCaptureScreen", () => {
   test("updates store with incoming screen stream", async () => {
     const { store, capturedStream } = await run();
     const state = store.getState();
-    const incomingStreams = streamSlice.selectors.incomingStreams(state);
-    expect(incomingStreams).toContainEqual({
+    const outgoingStreams = streamSlice.selectors.outgoingStreams(state);
+    expect(outgoingStreams).toContainEqual({
       id: capturedStream.id,
-      direction: "in",
+      direction: "out",
       label: "Screen",
     });
-  });
-
-  test("no outgoing streams initially", async () => {
-    const { store } = await run();
-    const state = store.getState();
-    const outgoingStreams = streamSlice.selectors.outgoingStreams(state);
-    expect(outgoingStreams).toEqual([]);
   });
 });

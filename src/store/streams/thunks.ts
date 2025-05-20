@@ -34,7 +34,7 @@ export const streamsCaptureScreen = createAppThunk(
     dispatch(
       streamSlice.actions.add({
         id: displayMediaStream.id,
-        direction: "in",
+        direction: "out",
         label: "Screen",
       }),
     );
