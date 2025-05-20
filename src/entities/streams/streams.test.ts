@@ -1,8 +1,12 @@
-import { streamsAdd, streamsCaptureScreen, streamsRemove } from "./thunks";
-import { createStore } from "../store";
+import {
+  streamsAdd,
+  streamsCaptureScreen,
+  streamsRemove,
+} from "../../features/streams";
+import { createStore } from "../../shared/store/store";
 import { streams } from "./streams";
 import { streamSlice } from "./slice";
-import { runOnce } from "../../utils/test-utils";
+import { runOnce } from "../../shared/test-utils";
 
 test("incoming stream", () => {
   const store = createStore();

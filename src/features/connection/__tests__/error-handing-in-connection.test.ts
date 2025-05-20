@@ -1,14 +1,20 @@
-import { AppDispatch, createStore } from "../../store";
-import { connectionSlice } from "../slice";
+import { AppDispatch, createStore } from "../../../shared/store/store";
+import { connectionSlice } from "../../../entities/connection/slice";
 import {
   connectionCreateClient,
   connectionCreateServer,
   connectionServerSetAnswer,
-} from "../thunks";
-import { FAKE_ANSWER, FAKE_OFFER } from "../test-data";
-import { deleteConnection, setConnection } from "../connection";
-import { checkErrors } from "../../../utils/test-utils";
-import { ConnectionStatus } from "../types";
+} from "../index";
+import {
+  FAKE_ANSWER,
+  FAKE_OFFER,
+} from "../../../entities/connection/test-data";
+import {
+  deleteConnection,
+  setConnection,
+} from "../../../entities/connection/connection";
+import { checkErrors } from "../../../shared/test-utils";
+import { ConnectionStatus } from "../../../entities/connection/types";
 
 const setInitialStatusCreated = (dispatch: AppDispatch) =>
   dispatch(connectionSlice.actions.setCreated());

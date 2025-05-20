@@ -1,14 +1,21 @@
-import { createStore } from "../../store";
+import { createStore } from "../../../shared/store/store";
 import {
   connectionServerSetAnswer,
   connectionSetCandidatesEventListener,
   connectionSetStatusEventListener,
-} from "../thunks";
-import { setConnection } from "../connection";
-import { connectionSlice } from "../slice";
-import { ConnectionState, ConnectionStatus } from "../types";
-import { checkErrors, runOnce } from "../../../utils/test-utils";
-import { CANDIDATES, FAKE_ANSWER, FAKE_OFFER } from "../test-data";
+} from "../index";
+import { setConnection } from "../../../entities/connection/connection";
+import { connectionSlice } from "../../../entities/connection/slice";
+import {
+  ConnectionState,
+  ConnectionStatus,
+} from "../../../entities/connection/types";
+import { checkErrors, runOnce } from "../../../shared/test-utils";
+import {
+  CANDIDATES,
+  FAKE_ANSWER,
+  FAKE_OFFER,
+} from "../../../entities/connection/test-data";
 
 describe("connectionSetCandidatesEventListener", () => {
   test("normal flow", async () => {

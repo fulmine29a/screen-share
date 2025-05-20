@@ -1,4 +1,4 @@
-import { createAppThunk, createStore } from "../store";
+import { createAppThunk, createStore } from "../../shared/store/store";
 import { errorSlice } from "./slice";
 
 describe("error handling", () => {

@@ -1,8 +1,9 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { errorSlice } from "../store/error/slice";
-import { RootState } from "../store/store";
-import { errorToAppError } from "../store/error/utils";
+import { ErrorPage } from "../pages/error";
+import { RootState } from "../shared/store/store";
+import { errorSlice } from "../entities/error/slice";
+import { errorToAppError } from "../shared/error/error-to-app-error";
 
 const connector = connect(
   (state: RootState) => ({
@@ -61,17 +62,7 @@ class ErrorBoundaryComponent extends React.PureComponent<
 
   render() {
     if (this.state.hasError || this.props.errors.length) {
-      return (
-        <>
-          <h1>Something went wrong.</h1>
-          {this.props.errors.map((error, i) => (
-            <React.Fragment key={i}>
-              <h2>{error.message || `Error #${i + 1}`}</h2>
-              <pre>{error.stack || "no call stack"}</pre>
-            </React.Fragment>
-          ))}
-        </>
-      );
+      return <ErrorPage />;
     }
 
     return this.props.children;

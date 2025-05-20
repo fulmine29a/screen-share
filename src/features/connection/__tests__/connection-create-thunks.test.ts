@@ -3,17 +3,22 @@ import {
   restoreMock,
   runOnce,
   saveMock,
-} from "../../../utils/test-utils";
-import { setConnection } from "../connection";
-import { createAppThunk, createStore } from "../../store";
-import { connectionSlice } from "../slice";
-import { connectionCreateClient, connectionCreateServer } from "../thunks";
-import { controlChannelSet } from "../../control-channel/thunks";
-import { ConnectionStatus } from "../types";
-import { FAKE_ANSWER, FAKE_OFFER } from "../test-data";
+} from "../../../shared/test-utils";
+import { setConnection } from "../../../entities/connection/connection";
+import { createAppThunk, createStore } from "../../../shared/store/store";
+import { connectionSlice } from "../../../entities/connection/slice";
+import { connectionCreateClient, connectionCreateServer } from "../index";
+import { controlChannelSet } from "../../../entities/control-channel/thunks";
+import { ConnectionStatus } from "../../../entities/connection/types";
+import {
+  FAKE_ANSWER,
+  FAKE_OFFER,
+} from "../../../entities/connection/test-data";
 
-jest.mock("../../control-channel/thunks", () => {
-  const originalModule = jest.requireActual("../../control-channel/thunks");
+jest.mock("../../../entities/control-channel/thunks", () => {
+  const originalModule = jest.requireActual(
+    "../../../entities/control-channel/thunks",
+  );
 
   const controlChannelSet = jest.fn(
     createAppThunk("controlChannelSet", () => {}),

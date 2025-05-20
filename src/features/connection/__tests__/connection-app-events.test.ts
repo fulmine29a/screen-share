@@ -1,19 +1,20 @@
-import { createAppThunk, createStore } from "../../store";
-import { connection, deleteConnection, setConnection } from "../connection";
-import { connectionAppStart, connectionAppStop } from "../thunks";
-import { checkErrors } from "../../../utils/test-utils";
-import { connectionSlice } from "../slice";
-import { ConnectionStatus } from "../types";
+import { createAppThunk, createStore } from "../../../shared/store/store";
 import {
-  appConnectionCreated,
-  appRemoveConnectionListeners,
-} from "../../app-events";
+  connection,
+  deleteConnection,
+  setConnection,
+} from "../../../entities/connection/connection";
+import { connectionAppStart, connectionAppStop } from "../index";
+import { checkErrors } from "../../../shared/test-utils";
+import { connectionSlice } from "../../../entities/connection/slice";
+import { ConnectionStatus } from "../../../entities/connection/types";
+import { appConnectionCreated, appRemoveConnectionListeners } from "../../app";
 
 let connectionInConnectionCreated: RTCPeerConnection | undefined;
 let connectionInRemoveListeners: RTCPeerConnection | undefined;
 
-jest.mock("../../app-events", () => {
-  const originalModule = jest.requireActual("../../app-events");
+jest.mock("../../app", () => {
+  const originalModule = jest.requireActual("../../app");
 
   const appConnectionCreated = jest.fn(
     createAppThunk("appConnectionCreated", () => {

@@ -1,10 +1,10 @@
-import { createAppThunk } from "./store";
+import { createAppThunk } from "../../shared/store/store";
 import {
   connectionAppStart,
   connectionAppStop,
   connectionSetCandidatesEventListener,
   connectionSetStatusEventListener,
-} from "./connection/thunks";
+} from "../connection";
 
 export const appStart = createAppThunk("appStart", async (_, { dispatch }) => {
   await dispatch(connectionAppStart());

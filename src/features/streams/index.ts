@@ -1,7 +1,7 @@
-import { createAppThunk } from "../store";
-import { streams } from "./streams";
-import { StreamDirection, StreamRecord } from "./types";
-import { streamSlice } from "./slice";
+import { createAppThunk } from "../../shared/store/store";
+import { streams } from "../../entities/streams/streams";
+import { StreamDirection, StreamRecord } from "../../entities/streams/types";
+import { streamSlice } from "../../entities/streams/slice";
 
 type StreamAddPayload = {
   stream: MediaStream;

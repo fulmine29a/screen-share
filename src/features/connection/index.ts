@@ -1,15 +1,16 @@
-import { createAppThunk } from "../store";
-import { connection, deleteConnection, setConnection } from "./connection";
-import { connectionSlice } from "./slice";
+import { createAppThunk } from "../../shared/store/store";
 import {
-  appConnectionCreated,
-  appRemoveConnectionListeners,
-} from "../app-events";
-import { getStringMessageFromUnknownError } from "../../utils/getStringMessageFromUnknownError";
-import { OfferOrAnswer } from "./types";
-import { controlChannelSet } from "../control-channel/thunks";
-import { errorSlice } from "../error/slice";
-import { errorToAppError } from "../error/utils";
+  connection,
+  deleteConnection,
+  setConnection,
+} from "../../entities/connection/connection";
+import { connectionSlice } from "../../entities/connection/slice";
+import { appConnectionCreated, appRemoveConnectionListeners } from "../app";
+import { getStringMessageFromUnknownError } from "../../shared/error/getStringMessageFromUnknownError";
+import { OfferOrAnswer } from "../../entities/connection/types";
+import { controlChannelSet } from "../../entities/control-channel/thunks";
+import { errorSlice } from "../../entities/error/slice";
+import { errorToAppError } from "../../shared/error/error-to-app-error";
 
 export const CONTROL_DATACHANNEL = "control-datachannel";
 

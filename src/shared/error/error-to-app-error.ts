@@ -1,4 +1,4 @@
-import { AppError } from "./slice";
+import { AppError } from "../../entities/error/slice";
 
 export const errorToAppError = (
   error: unknown,

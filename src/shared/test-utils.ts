@@ -1,5 +1,5 @@
-import { AppStore } from "../store/store";
-import { errorSlice } from "../store/error/slice";
+import { AppStore } from "./store/store";
+import { errorSlice } from "../entities/error/slice";
 
 type SavedMock = jest.Mock["mock"];
 

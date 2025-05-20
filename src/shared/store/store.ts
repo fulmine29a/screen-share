@@ -3,10 +3,10 @@ import {
   createAsyncThunk,
   SerializedError,
 } from "@reduxjs/toolkit";
-import { errorSlice } from "./error/slice";
-import { thunkErrorHandingMiddleware } from "./error/middleware";
-import { connectionSlice } from "./connection/slice";
-import { streamSlice } from "./streams/slice";
+import { errorSlice } from "../../entities/error/slice";
+import { thunkErrorHandingMiddleware } from "../../entities/error/middleware";
+import { connectionSlice } from "../../entities/connection/slice";
+import { streamSlice } from "../../entities/streams/slice";
 
 export function createStore() {
   return configureStore({

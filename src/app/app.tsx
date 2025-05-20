@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { appStart, appStop } from "../store/app-events";
-import { connectionSlice } from "../store/connection/slice";
+import { useAppDispatch, useAppSelector } from "../shared/store/hooks";
+import { connectionSlice } from "../entities/connection/slice";
+import { appStart, appStop } from "../features/app";
 import {
   connectionCreateClient,
   connectionCreateServer,
   connectionServerSetAnswer,
-} from "../store/connection/thunks";
+} from "../features/connection";
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();

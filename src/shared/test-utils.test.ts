@@ -1,6 +1,6 @@
 import { checkErrors, restoreMock, runOnce, saveMock } from "./test-utils";
-import { createStore } from "../store/store";
-import { errorSlice } from "../store/error/slice";
+import { createStore } from "./store/store";
+import { errorSlice } from "../entities/error/slice";
 
 describe(runOnce.name, () => {
   const mock = jest.fn();
