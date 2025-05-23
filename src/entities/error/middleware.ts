@@ -1,5 +1,5 @@
 import { Middleware } from "@reduxjs/toolkit";
-import { AppThunkConfig } from "../../shared/store/store";
+import { AppThunkConfig } from "../../app/store";
 import { errorSlice } from "./slice";
 
 export const thunkErrorHandingMiddleware: Middleware =

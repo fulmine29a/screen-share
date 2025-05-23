@@ -1,35 +1,13 @@
-import {
-  checkErrors,
-  restoreMock,
-  runOnce,
-  saveMock,
-} from "../../../shared/test-utils";
+import { checkErrors } from "../../../shared/test-utils/check-errors";
 import { setConnection } from "../../../entities/connection/connection";
-import { createAppThunk, createStore } from "../../../shared/store/store";
+import { createAppStore } from "../../../app/store";
 import { connectionSlice } from "../../../entities/connection/slice";
 import { connectionCreateClient, connectionCreateServer } from "../index";
-import { controlChannelSet } from "../../../entities/control-channel/thunks";
 import { ConnectionStatus } from "../../../entities/connection/types";
-import {
-  FAKE_ANSWER,
-  FAKE_OFFER,
-} from "../../../entities/connection/test-data";
-
-jest.mock("../../../entities/control-channel/thunks", () => {
-  const originalModule = jest.requireActual(
-    "../../../entities/control-channel/thunks",
-  );
-
-  const controlChannelSet = jest.fn(
-    createAppThunk("controlChannelSet", () => {}),
-  );
-
-  return {
-    __esModule: true,
-    ...originalModule,
-    controlChannelSet,
-  };
-});
+import { FAKE_ANSWER, FAKE_OFFER } from "../test-data";
+import { restoreMock, saveMock } from "../../../shared/test-utils/save-mock";
+import { runOnce } from "../../../shared/test-utils/run-once";
+import { getControlChannel } from "../../../entities/control-channel/control-channel";
 
 describe("connectionCreateServer", () => {
   const testDataChannel = new RTCDataChannel();
@@ -42,14 +20,15 @@ describe("connectionCreateServer", () => {
     connection.setLocalDescription = jest.fn(async () => undefined);
     connection.createDataChannel = jest.fn(() => testDataChannel);
     setConnection(connection);
-    const store = createStore();
+    const store = createAppStore();
     store.dispatch(connectionSlice.actions.setCreated());
     await store.dispatch(connectionCreateServer());
+    const controlChannelAfter = getControlChannel();
 
     return {
       createOffer: saveMock(connection.createOffer),
       setLocalDescription: saveMock(connection.setLocalDescription),
-      controlChannelSet: saveMock(controlChannelSet),
+      controlChannelAfter,
       store,
     };
   });
@@ -72,11 +51,10 @@ describe("connectionCreateServer", () => {
     expect(fn).toHaveBeenCalled();
   });
 
-  test("send control channel to control-channel slice", async () => {
-    const fn = restoreMock((await run()).controlChannelSet);
+  test("send control channel to entity", async () => {
+    const controlChannelAfter = (await run()).controlChannelAfter;
 
-    expect(fn).toHaveBeenCalledTimes(1);
-    expect(fn.mock.lastCall[0]).toStrictEqual(testDataChannel);
+    expect(controlChannelAfter).toStrictEqual(testDataChannel);
   });
 
   test("local description", async () => {
@@ -94,7 +72,7 @@ describe("connectionCreateClient", () => {
     connection.setLocalDescription = jest.fn(async () => undefined);
     connection.setRemoteDescription = jest.fn(async () => undefined);
     setConnection(connection);
-    const store = createStore();
+    const store = createAppStore();
     store.dispatch(connectionSlice.actions.setCreated());
     await store.dispatch(connectionCreateClient(FAKE_OFFER));
 

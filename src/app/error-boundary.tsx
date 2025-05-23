@@ -1,7 +1,7 @@
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { ErrorPage } from "../pages/error";
-import { RootState } from "../shared/store/store";
+import { RootState } from "./store";
 import { errorSlice } from "../entities/error/slice";
 import { errorToAppError } from "../shared/error/error-to-app-error";
 

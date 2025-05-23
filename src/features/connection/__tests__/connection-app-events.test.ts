@@ -1,11 +1,12 @@
-import { createAppThunk, createStore } from "../../../shared/store/store";
+import { createAppStore } from "../../../app/store";
+import { createAppThunk } from "../../../shared/store/create-app-thunk";
 import {
   connection,
   deleteConnection,
   setConnection,
 } from "../../../entities/connection/connection";
 import { connectionAppStart, connectionAppStop } from "../index";
-import { checkErrors } from "../../../shared/test-utils";
+import { checkErrors } from "../../../shared/test-utils/check-errors";
 import { connectionSlice } from "../../../entities/connection/slice";
 import { ConnectionStatus } from "../../../entities/connection/types";
 import { appConnectionCreated, appRemoveConnectionListeners } from "../../app";
@@ -39,7 +40,7 @@ jest.mock("../../app", () => {
 describe("create/close", () => {
   test("create on appStart", async () => {
     connectionInConnectionCreated = undefined;
-    const store = createStore();
+    const store = createAppStore();
     await store.dispatch(connectionAppStart());
     checkErrors(store, 0);
     expect(connection).toBeInstanceOf(RTCPeerConnection);
@@ -53,7 +54,7 @@ describe("create/close", () => {
 
   test("close", async () => {
     connectionInRemoveListeners = undefined;
-    const store = createStore();
+    const store = createAppStore();
     setConnection(new RTCPeerConnection());
     store.dispatch(connectionSlice.actions.setFailed("test fail"));
     await store.dispatch(connectionAppStop());
@@ -69,7 +70,7 @@ describe("create/close", () => {
   });
 
   test("close uninitialized connection", async () => {
-    const store = createStore();
+    const store = createAppStore();
     deleteConnection();
     await store.dispatch(connectionAppStop());
     expect(appRemoveConnectionListeners).not.toHaveBeenCalled();

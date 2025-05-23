@@ -1,4 +1,3 @@
-import { createAppThunk } from "../../shared/store/store";
 import {
   connection,
   deleteConnection,
@@ -6,11 +5,12 @@ import {
 } from "../../entities/connection/connection";
 import { connectionSlice } from "../../entities/connection/slice";
 import { appConnectionCreated, appRemoveConnectionListeners } from "../app";
-import { getStringMessageFromUnknownError } from "../../shared/error/getStringMessageFromUnknownError";
+import { getStringMessageFromUnknownError } from "../../shared/error/get-string-message-from-unknown-error";
 import { OfferOrAnswer } from "../../entities/connection/types";
-import { controlChannelSet } from "../../entities/control-channel/thunks";
 import { errorSlice } from "../../entities/error/slice";
 import { errorToAppError } from "../../shared/error/error-to-app-error";
+import { createAppThunk } from "../../shared/store/create-app-thunk";
+import { setControlChannel } from "../../entities/control-channel/control-channel";
 
 export const CONTROL_DATACHANNEL = "control-datachannel";
 
@@ -45,7 +45,7 @@ export const connectionCreateServer = createAppThunk(
       const offer = await connection.createOffer();
       await connection.setLocalDescription(offer);
       dispatch(connectionSlice.actions.setSearchCandidates());
-      dispatch(controlChannelSet(dc));
+      setControlChannel(dc);
     } catch (e) {
       dispatch(
         connectionSlice.actions.setFailed(

@@ -1,4 +1,4 @@
-import { createStore } from "../../../shared/store/store";
+import { createAppStore } from "../../../app/store";
 import {
   connectionServerSetAnswer,
   connectionSetCandidatesEventListener,
@@ -10,18 +10,15 @@ import {
   ConnectionState,
   ConnectionStatus,
 } from "../../../entities/connection/types";
-import { checkErrors, runOnce } from "../../../shared/test-utils";
-import {
-  CANDIDATES,
-  FAKE_ANSWER,
-  FAKE_OFFER,
-} from "../../../entities/connection/test-data";
+import { checkErrors } from "../../../shared/test-utils/check-errors";
+import { CANDIDATES, FAKE_ANSWER, FAKE_OFFER } from "../test-data";
+import { runOnce } from "../../../shared/test-utils/run-once";
 
 describe("connectionSetCandidatesEventListener", () => {
   test("normal flow", async () => {
     const connection = new RTCPeerConnection();
     setConnection(connection);
-    const store = createStore();
+    const store = createAppStore();
     store.dispatch(connectionSlice.actions.setCreated());
     await store.dispatch(connectionSetCandidatesEventListener());
     store.dispatch(connectionSlice.actions.setSearchCandidates());
@@ -48,7 +45,7 @@ describe("connectionSetCandidatesEventListener", () => {
   test("error handling", async () => {
     const connection = new RTCPeerConnection();
     setConnection(connection);
-    const store = createStore();
+    const store = createAppStore();
     store.dispatch(connectionSlice.actions.setCreated());
     await store.dispatch(connectionSetCandidatesEventListener());
     const event = new RTCPeerConnectionIceEvent("icecandidate", {
@@ -73,7 +70,7 @@ describe("connectionSetStatusEventListener", () => {
   ];
 
   const run = runOnce(() => {
-    const store = createStore();
+    const store = createAppStore();
     const connection = new RTCPeerConnection();
     setConnection(connection);
     store.dispatch(connectionSetStatusEventListener());
@@ -106,7 +103,7 @@ describe("connectionSetStatusEventListener", () => {
   );
 
   test("connectionSetStatusEventListener error handing", () => {
-    const store = createStore();
+    const store = createAppStore();
     const connection = new RTCPeerConnection();
     setConnection(connection);
     store.dispatch(connectionSetStatusEventListener());
@@ -127,7 +124,7 @@ describe("connectionSetStatusEventListener", () => {
   });
 
   test("connectionSetStatusEventListener reconnect", () => {
-    const store = createStore();
+    const store = createAppStore();
     const connection = new RTCPeerConnection();
     setConnection(connection);
     store.dispatch(connectionSetStatusEventListener());
@@ -163,7 +160,7 @@ describe("connectionSetStatusEventListener", () => {
 
 describe("connectionServerSetAnswer", () => {
   test("normal", async () => {
-    const store = createStore();
+    const store = createAppStore();
     const connection = new RTCPeerConnection();
     const setRemoteDescription = jest.fn(async () => undefined);
     connection.setRemoteDescription = setRemoteDescription;

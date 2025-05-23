@@ -1,4 +1,4 @@
-import { getStringMessageFromUnknownError } from "./getStringMessageFromUnknownError";
+import { getStringMessageFromUnknownError } from "./get-string-message-from-unknown-error";
 
 describe("getStringMessageFromUnknownError", () => {
   const defaultMessage = "Default Error Message";

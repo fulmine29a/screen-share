@@ -1,5 +1,6 @@
-import { createAppThunk, createStore } from "../../shared/store/store";
+import { createAppStore } from "../../app/store";
 import { errorSlice } from "./slice";
+import { createAppThunk } from "../../shared/store/create-app-thunk";
 
 describe("error handling", () => {
   test("throw Error in thunk", () => {
@@ -9,7 +10,7 @@ describe("error handling", () => {
       throw new Error(EXPECTED_ERROR_MESSAGE);
     });
 
-    const store = createStore();
+    const store = createAppStore();
 
     store.dispatch(testEffect());
 
@@ -29,7 +30,7 @@ describe("error handling", () => {
       undefined();
     });
 
-    const store = createStore();
+    const store = createAppStore();
 
     store.dispatch(testEffect());
 
@@ -44,7 +45,7 @@ describe("error handling", () => {
       },
     );
 
-    const store = createStore();
+    const store = createAppStore();
 
     store.dispatch(testEffect());
 
@@ -52,7 +53,7 @@ describe("error handling", () => {
   });
 
   test("in reducer (do middlewares miss the error?)", () => {
-    const store = createStore();
+    const store = createAppStore();
 
     expect(() => store.dispatch(errorSlice.actions.raiseError())).toThrow(
       "error in reducer",

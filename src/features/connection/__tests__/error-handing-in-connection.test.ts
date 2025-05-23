@@ -1,19 +1,16 @@
-import { AppDispatch, createStore } from "../../../shared/store/store";
+import { AppDispatch, createAppStore } from "../../../app/store";
 import { connectionSlice } from "../../../entities/connection/slice";
 import {
   connectionCreateClient,
   connectionCreateServer,
   connectionServerSetAnswer,
 } from "../index";
-import {
-  FAKE_ANSWER,
-  FAKE_OFFER,
-} from "../../../entities/connection/test-data";
+import { FAKE_ANSWER, FAKE_OFFER } from "../test-data";
 import {
   deleteConnection,
   setConnection,
 } from "../../../entities/connection/connection";
-import { checkErrors } from "../../../shared/test-utils";
+import { checkErrors } from "../../../shared/test-utils/check-errors";
 import { ConnectionStatus } from "../../../entities/connection/types";
 
 const setInitialStatusCreated = (dispatch: AppDispatch) =>
@@ -48,7 +45,7 @@ describe.each([
   "error handing in $thunk.typePrefix",
   ({ thunk, failMethods, arg, setInitialStatus }) => {
     test("connection is undefined", async () => {
-      const store = createStore();
+      const store = createAppStore();
       store.dispatch(connectionSlice.actions.setCreated());
       deleteConnection();
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -58,7 +55,7 @@ describe.each([
     });
 
     test("wrong status", async () => {
-      const store = createStore();
+      const store = createAppStore();
       setConnection(new RTCPeerConnection());
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -67,7 +64,7 @@ describe.each([
     });
 
     test.each(failMethods)("exception in %s", async (method) => {
-      const store = createStore();
+      const store = createAppStore();
       const connection = new RTCPeerConnection();
       const ERROR_MESSAGE = "error message";
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment

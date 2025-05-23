@@ -1,4 +1,4 @@
-import { OfferOrAnswer } from "./types";
+import { OfferOrAnswer } from "../../entities/connection/types";
 
 export const FAKE_OFFER: OfferOrAnswer = {
   type: "offer",
