@@ -1,16 +1,16 @@
 import {
-  connection,
   deleteConnection,
+  getConnection,
+  hasConnection,
   setConnection,
 } from "../../entities/connection/connection";
 import { connectionSlice } from "../../entities/connection/slice";
-import { appConnectionCreated, appRemoveConnectionListeners } from "../app";
+import { appConnectionCreated, appControlChannelCreated } from "../app";
 import { getStringMessageFromUnknownError } from "../../shared/error/get-string-message-from-unknown-error";
 import { OfferOrAnswer } from "../../entities/connection/types";
 import { errorSlice } from "../../entities/error/slice";
 import { errorToAppError } from "../../shared/error/error-to-app-error";
 import { createAppThunk } from "../../shared/store/create-app-thunk";
-import { setControlChannel } from "../../entities/control-channel/control-channel";
 
 export const CONTROL_DATACHANNEL = "control-datachannel";
 
@@ -21,6 +21,9 @@ export const connectionAppStart = createAppThunk(
       new RTCPeerConnection({
         iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
       }),
+    );
+    getConnection().addEventListener("negotiationneeded", () =>
+      console.log("negativation needed"),
     );
 
     dispatch(connectionSlice.actions.setCreated());
@@ -35,9 +38,7 @@ export const connectionCreateServer = createAppThunk(
     if (status != "CREATED") {
       throw new Error("wrong status");
     }
-    if (!connection) {
-      throw new Error("connection is required to create a server");
-    }
+    const connection = getConnection();
 
     try {
       const dc = connection.createDataChannel(CONTROL_DATACHANNEL);
@@ -45,7 +46,7 @@ export const connectionCreateServer = createAppThunk(
       const offer = await connection.createOffer();
       await connection.setLocalDescription(offer);
       dispatch(connectionSlice.actions.setSearchCandidates());
-      setControlChannel(dc);
+      dispatch(appControlChannelCreated(dc));
     } catch (e) {
       dispatch(
         connectionSlice.actions.setFailed(
@@ -66,9 +67,7 @@ export const connectionServerSetAnswer = createAppThunk(
     if (status != "CANDIDATES_FOUND") {
       throw new Error("wrong status");
     }
-    if (!connection) {
-      throw new Error("connection is required to create a server");
-    }
+    const connection = getConnection();
 
     try {
       await connection.setRemoteDescription(answer);
@@ -92,9 +91,7 @@ export const connectionCreateClient = createAppThunk(
     if (status != "CREATED") {
       throw new Error("wrong status");
     }
-    if (!connection) {
-      throw new Error("connection is required to create a client");
-    }
+    const connection = getConnection();
 
     try {
       await connection.setRemoteDescription(offer);
@@ -118,12 +115,7 @@ export const connectionCreateClient = createAppThunk(
 export const connectionSetCandidatesEventListener = createAppThunk(
   "connectionSetCandidatesEventListener",
   async (_, { dispatch }) => {
-    if (!connection) {
-      throw new Error(
-        "connection is required to set candidates event listener",
-      );
-    }
-
+    const connection = getConnection();
     connection.addEventListener(
       "icecandidate",
       function ({ candidate }: RTCPeerConnectionIceEvent) {
@@ -150,10 +142,7 @@ export const connectionSetCandidatesEventListener = createAppThunk(
 export const connectionSetStatusEventListener = createAppThunk(
   "connectionSetStatusEventListener",
   async (_, { dispatch }) => {
-    if (!connection) {
-      throw new Error("connection is required to set status event listener");
-    }
-
+    const connection = getConnection();
     connection.addEventListener("connectionstatechange", function () {
       try {
         switch (this.connectionState) {
@@ -183,9 +172,9 @@ export const connectionSetStatusEventListener = createAppThunk(
 export const connectionAppStop = createAppThunk(
   "connectionAppStop",
   async (_, { dispatch }) => {
-    if (connection) {
+    if (hasConnection()) {
+      const connection = getConnection();
       connection.close();
-      dispatch(appRemoveConnectionListeners());
       dispatch(connectionSlice.actions.reset());
       deleteConnection();
     }

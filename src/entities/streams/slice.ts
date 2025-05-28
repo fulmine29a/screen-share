@@ -15,6 +15,9 @@ export const streamSlice = createSlice({
     remove(state, { payload }: PayloadAction<StreamRecord["id"]>) {
       state.streams = state.streams.filter(({ id }) => id != payload);
     },
+    reset() {
+      return initialState;
+    },
   },
   selectors: {
     incomingStreams: (state) =>

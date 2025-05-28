@@ -1,4 +1,4 @@
-import { streamsAddOutgoing } from "../addOutgoing";
+import { streamsSendOutgoing } from "../outgoing";
 import { createAppThunk } from "../../../shared/store/create-app-thunk";
 
 export const streamsCaptureScreen = createAppThunk(
@@ -9,8 +9,8 @@ export const streamsCaptureScreen = createAppThunk(
         audio: true,
       });
 
-      dispatch(
-        streamsAddOutgoing({ stream: displayMediaStream, label: "Screen" }),
+      await dispatch(
+        streamsSendOutgoing({ stream: displayMediaStream, label: "Screen" }),
       );
 
       return true;

@@ -7,6 +7,8 @@ import {
   connectionCreateServer,
   connectionServerSetAnswer,
 } from "../features/connection";
+import { streamSlice } from "../entities/streams/slice";
+import { streamsCaptureScreen } from "../features/streams/capture-screen";
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -21,11 +23,9 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     dispatch(appStart());
-
-    return () => {
-      dispatch(appStop());
-    };
   }, []);
+
+  const outStreams = useAppSelector(streamSlice.selectors.outgoingStreams);
 
   return (
     <>
@@ -43,6 +43,8 @@ export const App: React.FC = () => {
         >
           set answer
         </button>
+        <button onClick={() => dispatch(appStart())}>app start</button>
+        <button onClick={() => dispatch(appStop())}>app stop</button>
       </div>
       <div style={{ display: "flex" }}>
         <dl style={{ width: "50vw" }}>
@@ -69,6 +71,16 @@ export const App: React.FC = () => {
             </pre>
           </dd>
         </dl>
+      </div>
+      <div>
+        <div>
+          <button onClick={() => dispatch(streamsCaptureScreen())}>
+            capture screen
+          </button>
+        </div>
+        {outStreams.map((stream, i) => (
+          <div key={i}>{stream.label}</div>
+        ))}
       </div>
     </>
   );
