@@ -2,12 +2,13 @@ import { checkErrors } from "../../../shared/test-utils/check-errors";
 import { setConnection } from "../../../entities/connection/connection";
 import { createAppStore } from "../../../app/store";
 import { connectionSlice } from "../../../entities/connection/slice";
-import { connectionCreateClient, connectionCreateServer } from "../index";
 import { ConnectionStatus } from "../../../entities/connection/types";
 import { FAKE_ANSWER, FAKE_OFFER } from "../test-data";
 import { restoreMock, saveMock } from "../../../shared/test-utils/save-mock";
 import { runOnce } from "../../../shared/test-utils/run-once";
 import { getControlChannel } from "../../../entities/control-channel/control-channel";
+import { connectionCreateServer } from "../connection-create-server";
+import { connectionCreateClient } from "../connection-create-client";
 
 describe("connectionCreateServer", () => {
   const testDataChannel = new RTCDataChannel();

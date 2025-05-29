@@ -1,10 +1,5 @@
 import { AppDispatch, createAppStore } from "../../../app/store";
 import { connectionSlice } from "../../../entities/connection/slice";
-import {
-  connectionCreateClient,
-  connectionCreateServer,
-  connectionServerSetAnswer,
-} from "../index";
 import { FAKE_ANSWER, FAKE_OFFER } from "../test-data";
 import {
   deleteConnection,
@@ -12,6 +7,9 @@ import {
 } from "../../../entities/connection/connection";
 import { checkErrors } from "../../../shared/test-utils/check-errors";
 import { ConnectionStatus } from "../../../entities/connection/types";
+import { connectionCreateServer } from "../connection-create-server";
+import { connectionServerSetAnswer } from "../connection-server-set-answer";
+import { connectionCreateClient } from "../connection-create-client";
 
 const setInitialStatusCreated = (dispatch: AppDispatch) =>
   dispatch(connectionSlice.actions.setCreated());

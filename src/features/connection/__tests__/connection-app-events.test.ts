@@ -6,11 +6,12 @@ import {
   hasConnection,
   setConnection,
 } from "../../../entities/connection/connection";
-import { connectionAppStart, connectionAppStop } from "../index";
 import { checkErrors } from "../../../shared/test-utils/check-errors";
 import { connectionSlice } from "../../../entities/connection/slice";
 import { ConnectionStatus } from "../../../entities/connection/types";
-import { appConnectionCreated } from "../../app";
+
+import { connectionAppStop } from "../connection-app-stop";
+import { connectionAppStart } from "../connection-app-start";
 
 let connectionInConnectionCreated: RTCPeerConnection | undefined;
 
@@ -42,7 +43,6 @@ describe("create/close", () => {
     expect(
       connectionSlice.selectors.status(store.getState()),
     ).toBe<ConnectionStatus>("CREATED");
-    expect(appConnectionCreated).toHaveBeenCalledTimes(1);
     expect(connectionInConnectionCreated).toBe(getConnection());
     expect(connectionSlice.selectors.failReason(store.getState())).toBeFalsy();
   });

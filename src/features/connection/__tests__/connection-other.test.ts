@@ -1,9 +1,4 @@
 import { createAppStore } from "../../../app/store";
-import {
-  connectionServerSetAnswer,
-  connectionSetCandidatesEventListener,
-  connectionSetStatusEventListener,
-} from "../index";
 import { setConnection } from "../../../entities/connection/connection";
 import { connectionSlice } from "../../../entities/connection/slice";
 import {
@@ -13,6 +8,9 @@ import {
 import { checkErrors } from "../../../shared/test-utils/check-errors";
 import { CANDIDATES, FAKE_ANSWER, FAKE_OFFER } from "../test-data";
 import { runOnce } from "../../../shared/test-utils/run-once";
+import { connectionServerSetAnswer } from "../connection-server-set-answer";
+import { connectionSetStatusEventListener } from "../connection-set-status-event-listener";
+import { connectionSetCandidatesEventListener } from "../connection-set-candidates-event-listener";
 
 describe("connectionSetCandidatesEventListener", () => {
   test("normal flow", async () => {

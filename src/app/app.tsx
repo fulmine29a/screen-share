@@ -2,13 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../shared/store/hooks";
 import { connectionSlice } from "../entities/connection/slice";
 import { appStart, appStop } from "../features/app";
-import {
-  connectionCreateClient,
-  connectionCreateServer,
-  connectionServerSetAnswer,
-} from "../features/connection";
 import { streamSlice } from "../entities/streams/slice";
 import { streamsCaptureScreen } from "../features/streams/capture-screen";
+import { connectionCreateServer } from "../features/connection/connection-create-server";
+import { connectionServerSetAnswer } from "../features/connection/connection-server-set-answer";
+import { connectionCreateClient } from "../features/connection/connection-create-client";
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -26,6 +24,8 @@ export const App: React.FC = () => {
   }, []);
 
   const outStreams = useAppSelector(streamSlice.selectors.outgoingStreams);
+  const inStreams = useAppSelector(streamSlice.selectors.incomingStreams);
+  const streams = [...outStreams, ...inStreams];
 
   return (
     <>
@@ -78,7 +78,7 @@ export const App: React.FC = () => {
             capture screen
           </button>
         </div>
-        {outStreams.map((stream, i) => (
+        {streams.map((stream, i) => (
           <div key={i}>{stream.label}</div>
         ))}
       </div>

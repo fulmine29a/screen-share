@@ -10,3 +10,4 @@ export const getControlChannel = (): RTCDataChannel => {
 export const setControlChannel = (channel: RTCDataChannel) => {
   controlChannel = channel;
 };
+export const CONTROL_DATACHANNEL = "control-datachannel";
