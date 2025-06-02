@@ -34,12 +34,24 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.css$/i,
+        exclude: /node_modules/,
+        loader: "css-loader",
+        options: {
+          modules: {
+            localIdentName: isDev
+              ? "[local]_-[hash:base64:5]"
+              : "[hash:base64:5]",
+          },
+        },
+      },
     ],
   },
   devServer: {
     server: "https",
   },
-  devtool: "eval-source-map",
+  devtool: "eval-cheap-module-source-map",
   resolve: {
     extensions: [".ts", ".tsx", ".js"],
   },
