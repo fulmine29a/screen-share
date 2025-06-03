@@ -7,6 +7,7 @@ import { streamsCaptureScreen } from "../features/streams/capture-screen";
 import { connectionCreateServer } from "../features/connection/connection-create-server";
 import { connectionServerSetAnswer } from "../features/connection/connection-server-set-answer";
 import { connectionCreateClient } from "../features/connection/connection-create-client";
+import { VideoStreamWidget } from "../widgets/streams/video";
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -79,7 +80,7 @@ export const App: React.FC = () => {
           </button>
         </div>
         {streams.map((stream, i) => (
-          <div key={i}>{stream.label}</div>
+          <VideoStreamWidget key={i} id={stream.id} style={{ maxWidth: 300 }} />
         ))}
       </div>
     </>
