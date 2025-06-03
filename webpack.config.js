@@ -36,10 +36,10 @@ module.exports = {
       },
       {
         test: /\.css$/i,
-        exclude: /node_modules/,
         loader: "css-loader",
         options: {
           modules: {
+            auto: /\.modules\.css$/i,
             localIdentName: isDev
               ? "[local]_-[hash:base64:5]"
               : "[hash:base64:5]",

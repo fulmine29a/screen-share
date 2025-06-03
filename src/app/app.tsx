@@ -8,6 +8,7 @@ import { connectionCreateServer } from "../features/connection/connection-create
 import { connectionServerSetAnswer } from "../features/connection/connection-server-set-answer";
 import { connectionCreateClient } from "../features/connection/connection-create-client";
 import { VideoStreamWidget } from "../widgets/streams/video";
+import { Button } from "react-bootstrap";
 
 export const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -31,21 +32,21 @@ export const App: React.FC = () => {
   return (
     <>
       <div>
-        <button onClick={() => dispatch(connectionCreateServer())}>
+        <Button onClick={() => dispatch(connectionCreateServer())}>
           create server
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => dispatch(connectionCreateClient(remoteDescription))}
         >
           create client
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => dispatch(connectionServerSetAnswer(remoteDescription))}
         >
           set answer
-        </button>
-        <button onClick={() => dispatch(appStart())}>app start</button>
-        <button onClick={() => dispatch(appStop())}>app stop</button>
+        </Button>
+        <Button onClick={() => dispatch(appStart())}>app start</Button>
+        <Button onClick={() => dispatch(appStop())}>app stop</Button>
       </div>
       <div style={{ display: "flex" }}>
         <dl style={{ width: "50vw" }}>
@@ -75,9 +76,9 @@ export const App: React.FC = () => {
       </div>
       <div>
         <div>
-          <button onClick={() => dispatch(streamsCaptureScreen())}>
+          <Button onClick={() => dispatch(streamsCaptureScreen())}>
             capture screen
-          </button>
+          </Button>
         </div>
         {streams.map((stream, i) => (
           <VideoStreamWidget key={i} id={stream.id} style={{ maxWidth: 300 }} />
