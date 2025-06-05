@@ -18,7 +18,7 @@ export const connectionCreateClient = createAppThunk(
       const answer = await connection.createAnswer();
       await connection.setLocalDescription(answer);
 
-      dispatch(connectionSlice.actions.setSearchCandidates());
+      dispatch(connectionSlice.actions.setSearchCandidates("CLIENT"));
     } catch (e) {
       dispatch(
         connectionSlice.actions.setFailed(

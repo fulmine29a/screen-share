@@ -19,7 +19,7 @@ describe("connectionSetCandidatesEventListener", () => {
     const store = createAppStore();
     store.dispatch(connectionSlice.actions.setCreated());
     await store.dispatch(connectionSetCandidatesEventListener());
-    store.dispatch(connectionSlice.actions.setSearchCandidates());
+    store.dispatch(connectionSlice.actions.setSearchCandidates("SERVER"));
     for (const candidate of CANDIDATES) {
       const event = new RTCPeerConnectionIceEvent("icecandidate", {
         candidate: new RTCIceCandidate(candidate),
@@ -72,7 +72,7 @@ describe("connectionSetStatusEventListener", () => {
     const connection = new RTCPeerConnection();
     setConnection(connection);
     store.dispatch(connectionSetStatusEventListener());
-    store.dispatch(connectionSlice.actions.setSearchCandidates());
+    store.dispatch(connectionSlice.actions.setSearchCandidates("SERVER"));
     store.dispatch(
       connectionSlice.actions.setCandidatesFound(JSON.stringify(FAKE_OFFER)),
     );
@@ -126,7 +126,7 @@ describe("connectionSetStatusEventListener", () => {
     const connection = new RTCPeerConnection();
     setConnection(connection);
     store.dispatch(connectionSetStatusEventListener());
-    store.dispatch(connectionSlice.actions.setSearchCandidates());
+    store.dispatch(connectionSlice.actions.setSearchCandidates("SERVER"));
     store.dispatch(
       connectionSlice.actions.setCandidatesFound(JSON.stringify(FAKE_OFFER)),
     );
@@ -164,7 +164,7 @@ describe("connectionServerSetAnswer", () => {
     connection.setRemoteDescription = setRemoteDescription;
     setConnection(connection);
     store.dispatch(connectionSlice.actions.setCreated());
-    store.dispatch(connectionSlice.actions.setSearchCandidates());
+    store.dispatch(connectionSlice.actions.setSearchCandidates("SERVER"));
     store.dispatch(
       connectionSlice.actions.setCandidatesFound(JSON.stringify(FAKE_OFFER)),
     );

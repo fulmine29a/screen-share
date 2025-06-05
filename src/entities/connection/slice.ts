@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ConnectionState } from "./types";
+import { ConnectionRole, ConnectionState } from "./types";
 
 const initialState: ConnectionState = {
   status: "NOT_INITIALIZED",
@@ -15,10 +15,14 @@ export const connectionSlice = createSlice({
     setCreated: () => {
       return { status: "CREATED" as const };
     },
-    setSearchCandidates: () => {
+    setSearchCandidates: (
+      state,
+      { payload }: PayloadAction<ConnectionRole>,
+    ) => {
       return {
-        status: "SEARCH_FOR_CANDIDATES" as const,
-      };
+        status: "SEARCH_FOR_CANDIDATES",
+        role: payload,
+      } as const;
     },
     setCandidatesFound: (state, { payload }: PayloadAction<string | null>) => {
       if (state.status != "SEARCH_FOR_CANDIDATES") {
@@ -30,6 +34,7 @@ export const connectionSlice = createSlice({
 
       return {
         status: "CANDIDATES_FOUND",
+        role: state.role,
         localDescription: payload,
       };
     },
@@ -48,5 +53,14 @@ export const connectionSlice = createSlice({
     failReason: (state) => state.status == "FAILED" && state.failReason,
     localDescription: (state) =>
       state.status == "CANDIDATES_FOUND" && state.localDescription,
+    role: (state) => {
+      if (
+        state.status == "SEARCH_FOR_CANDIDATES" ||
+        state.status == "CANDIDATES_FOUND"
+      ) {
+        return state.role;
+      }
+      throw new Error("it is impossible to get a role in this status");
+    },
   },
 });

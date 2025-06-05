@@ -2,7 +2,10 @@ import { checkErrors } from "../../../shared/test-utils/check-errors";
 import { setConnection } from "../../../entities/connection/connection";
 import { createAppStore } from "../../../app/store";
 import { connectionSlice } from "../../../entities/connection/slice";
-import { ConnectionStatus } from "../../../entities/connection/types";
+import {
+  ConnectionRole,
+  ConnectionStatus,
+} from "../../../entities/connection/types";
 import { FAKE_ANSWER, FAKE_OFFER } from "../test-data";
 import { restoreMock, saveMock } from "../../../shared/test-utils/save-mock";
 import { runOnce } from "../../../shared/test-utils/run-once";
@@ -45,6 +48,9 @@ describe("connectionCreateServer", () => {
     expect(
       connectionSlice.selectors.status(store.getState()),
     ).toBe<ConnectionStatus>("SEARCH_FOR_CANDIDATES");
+    expect(
+      connectionSlice.selectors.role(store.getState()),
+    ).toBe<ConnectionRole>("SERVER");
   });
 
   test("createOffer called", async () => {
@@ -96,6 +102,9 @@ describe("connectionCreateClient", () => {
     expect(
       connectionSlice.selectors.status(store.getState()),
     ).toBe<ConnectionStatus>("SEARCH_FOR_CANDIDATES");
+    expect(
+      connectionSlice.selectors.role(store.getState()),
+    ).toBe<ConnectionRole>("CLIENT");
   });
 
   test("create answer", async () => {

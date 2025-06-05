@@ -4,7 +4,7 @@ import { ErrorBoundary } from "./error-boundary";
 import { createAppStore } from "./store";
 import { App } from "./app";
 
-export const AppWithWrappers = () => {
+export const Wrappers = () => {
   const store = useMemo(() => createAppStore(), []);
 
   return (

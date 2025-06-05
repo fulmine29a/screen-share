@@ -19,7 +19,7 @@ export const connectionCreateServer = createAppThunk(
 
       const offer = await connection.createOffer();
       await connection.setLocalDescription(offer);
-      dispatch(connectionSlice.actions.setSearchCandidates());
+      dispatch(connectionSlice.actions.setSearchCandidates("SERVER"));
       dispatch(controlChannelSet(dc));
     } catch (e) {
       dispatch(

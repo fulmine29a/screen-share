@@ -33,7 +33,7 @@ describe.each([
     arg: FAKE_ANSWER,
     setInitialStatus: (dispatch) => {
       dispatch(connectionSlice.actions.setCreated());
-      dispatch(connectionSlice.actions.setSearchCandidates());
+      dispatch(connectionSlice.actions.setSearchCandidates("SERVER"));
       dispatch(
         connectionSlice.actions.setCandidatesFound(JSON.stringify(FAKE_OFFER)),
       );

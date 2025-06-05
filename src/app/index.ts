@@ -1,3 +1,3 @@
-import { AppWithWrappers } from "./app-with-wrappers";
+import { Wrappers } from "./wrappers";
 
-export default AppWithWrappers;
+export default Wrappers;
