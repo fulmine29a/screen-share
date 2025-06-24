@@ -1,5 +1,8 @@
 import { checkErrors } from "../../../shared/test-utils/check-errors";
-import { setConnection } from "../../../entities/connection/connection";
+import {
+  deleteConnection,
+  setConnection,
+} from "../../../entities/connection/connection";
 import { createAppStore } from "../../../app/store";
 import { connectionSlice } from "../../../entities/connection/slice";
 import {
@@ -78,6 +81,7 @@ describe("connectionCreateClient", () => {
     connection.createAnswer = jest.fn(async () => FAKE_ANSWER);
     connection.setLocalDescription = jest.fn(async () => undefined);
     connection.setRemoteDescription = jest.fn(async () => undefined);
+    deleteConnection();
     setConnection(connection);
     const store = createAppStore();
     store.dispatch(connectionSlice.actions.setCreated());

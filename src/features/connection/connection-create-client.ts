@@ -3,10 +3,11 @@ import { OfferOrAnswer } from "../../entities/connection/types";
 import { connectionSlice } from "../../entities/connection/slice";
 import { getConnection } from "../../entities/connection/connection";
 import { getStringMessageFromUnknownError } from "../../shared/error/get-string-message-from-unknown-error";
+import { cantRunParallel } from "../../shared/cant-run-parallel";
 
 export const connectionCreateClient = createAppThunk(
   "connectionCreateClient",
-  async (offer: OfferOrAnswer, { dispatch, getState }) => {
+  cantRunParallel(async (offer: OfferOrAnswer, { dispatch, getState }) => {
     const status = connectionSlice.selectors.status(getState());
     if (status != "CREATED") {
       throw new Error("wrong status");
@@ -29,5 +30,5 @@ export const connectionCreateClient = createAppThunk(
         ),
       );
     }
-  },
+  }),
 );

@@ -1,3 +1,7 @@
 body {
   background: #eeeeee;
 }
+
+[disabled] {
+  cursor: not-allowed;
+}

@@ -31,7 +31,7 @@ describe.each([
     thunk: connectionServerSetAnswer,
     failMethods: ["setRemoteDescription"],
     arg: FAKE_ANSWER,
-    setInitialStatus: (dispatch) => {
+    setInitialStatus: (dispatch: AppDispatch) => {
       dispatch(connectionSlice.actions.setCreated());
       dispatch(connectionSlice.actions.setSearchCandidates("SERVER"));
       dispatch(
@@ -70,6 +70,7 @@ describe.each([
       connection[method] = async () => {
         throw new Error(ERROR_MESSAGE);
       };
+      deleteConnection();
       setConnection(connection);
       setInitialStatus(store.dispatch);
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment

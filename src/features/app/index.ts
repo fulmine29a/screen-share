@@ -15,10 +15,16 @@ import {
 import { ControlChannelMessage } from "../../entities/control-channel-message";
 import { connectionNegotiationNeededMessage } from "../connection/connection-negatiation-needed-message";
 import { connectionNegotiationAnswerMessage } from "../connection/connection-negotiation-answer-message";
+import { connectionSlice } from "../../entities/connection/slice";
+import { cantRunParallel } from "../../shared/cant-run-parallel";
+import { takeLeading } from "../../shared/take-leading";
 
-export const appStart = createAppThunk("appStart", async (_, { dispatch }) => {
-  await dispatch(connectionAppStart());
-});
+export const appStart = createAppThunk(
+  "appStart",
+  cantRunParallel(async (_: undefined, { dispatch }) => {
+    await dispatch(connectionAppStart()).unwrap();
+  }),
+);
 
 export const appConnectionCreated = createAppThunk(
   "appConnectionCreated",
@@ -30,11 +36,14 @@ export const appConnectionCreated = createAppThunk(
   },
 );
 
-export const appStop = createAppThunk("appStop", async (_, { dispatch }) => {
-  await dispatch(streamsIncomingConnectionAppStop());
-  await dispatch(streamsAppStop());
-  await dispatch(connectionAppStop());
-});
+export const appStop = createAppThunk(
+  "appStop",
+  cantRunParallel(async (_: undefined, { dispatch }) => {
+    await dispatch(streamsIncomingConnectionAppStop()).unwrap();
+    await dispatch(streamsAppStop()).unwrap();
+    await dispatch(connectionAppStop()).unwrap();
+  }),
+);
 
 export const appControlChannelMessage = createAppThunk(
   "appControlChannelMessage",
@@ -55,4 +64,19 @@ export const appSendControlChannelMessage = createAppThunk(
   async (msg: ControlChannelMessage, { dispatch }) => {
     dispatch(controlChannelSend(msg));
   },
+);
+
+export const appRestart = createAppThunk(
+  "appRestart",
+  takeLeading(async (_: undefined, { dispatch, getState }) => {
+    const status = connectionSlice.selectors.status(getState());
+    if (status == "CREATED") {
+      return;
+    }
+    if (status != "NOT_INITIALIZED") {
+      await dispatch(appStop()).unwrap();
+    }
+    await dispatch(appStart()).unwrap();
+    return "restarted" as const;
+  }),
 );

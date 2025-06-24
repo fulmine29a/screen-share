@@ -60,7 +60,7 @@ export const connectionSlice = createSlice({
       ) {
         return state.role;
       }
-      throw new Error("it is impossible to get a role in this status");
+      return undefined;
     },
   },
 });

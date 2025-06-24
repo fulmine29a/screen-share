@@ -1,13 +1,14 @@
 import { createAppThunk } from "../../shared/store/create-app-thunk";
 import { connectionSlice } from "../../entities/connection/slice";
-import { getConnection } from "../../entities/connection/connection";
 import { CONTROL_DATACHANNEL } from "../../entities/control-channel/control-channel";
 import { getStringMessageFromUnknownError } from "../../shared/error/get-string-message-from-unknown-error";
 import { controlChannelSet } from "../control-channel";
+import { getConnection } from "../../entities/connection/connection";
+import { cantRunParallel } from "../../shared/cant-run-parallel";
 
 export const connectionCreateServer = createAppThunk(
   "connectionCreateServer",
-  async (_, { dispatch, getState }) => {
+  cantRunParallel(async (_: undefined, { dispatch, getState }) => {
     const status = connectionSlice.selectors.status(getState());
     if (status != "CREATED") {
       throw new Error("wrong status");
@@ -31,5 +32,5 @@ export const connectionCreateServer = createAppThunk(
         ),
       );
     }
-  },
+  }),
 );

@@ -1,5 +1,8 @@
 import { createAppStore } from "../../../app/store";
-import { setConnection } from "../../../entities/connection/connection";
+import {
+  deleteConnection,
+  setConnection,
+} from "../../../entities/connection/connection";
 import { connectionSlice } from "../../../entities/connection/slice";
 import {
   ConnectionState,
@@ -42,6 +45,7 @@ describe("connectionSetCandidatesEventListener", () => {
 
   test("error handling", async () => {
     const connection = new RTCPeerConnection();
+    deleteConnection();
     setConnection(connection);
     const store = createAppStore();
     store.dispatch(connectionSlice.actions.setCreated());
@@ -70,6 +74,7 @@ describe("connectionSetStatusEventListener", () => {
   const run = runOnce(() => {
     const store = createAppStore();
     const connection = new RTCPeerConnection();
+    deleteConnection();
     setConnection(connection);
     store.dispatch(connectionSetStatusEventListener());
     store.dispatch(connectionSlice.actions.setSearchCandidates("SERVER"));
@@ -103,6 +108,7 @@ describe("connectionSetStatusEventListener", () => {
   test("connectionSetStatusEventListener error handing", () => {
     const store = createAppStore();
     const connection = new RTCPeerConnection();
+    deleteConnection();
     setConnection(connection);
     store.dispatch(connectionSetStatusEventListener());
 
@@ -124,6 +130,7 @@ describe("connectionSetStatusEventListener", () => {
   test("connectionSetStatusEventListener reconnect", () => {
     const store = createAppStore();
     const connection = new RTCPeerConnection();
+    deleteConnection();
     setConnection(connection);
     store.dispatch(connectionSetStatusEventListener());
     store.dispatch(connectionSlice.actions.setSearchCandidates("SERVER"));
@@ -162,6 +169,7 @@ describe("connectionServerSetAnswer", () => {
     const connection = new RTCPeerConnection();
     const setRemoteDescription = jest.fn(async () => undefined);
     connection.setRemoteDescription = setRemoteDescription;
+    deleteConnection();
     setConnection(connection);
     store.dispatch(connectionSlice.actions.setCreated());
     store.dispatch(connectionSlice.actions.setSearchCandidates("SERVER"));
@@ -171,5 +179,21 @@ describe("connectionServerSetAnswer", () => {
     await store.dispatch(connectionServerSetAnswer(FAKE_ANSWER));
     checkErrors(store, 0);
     expect(setRemoteDescription).toHaveBeenCalledWith(FAKE_ANSWER);
+  });
+  test("invalid role", async () => {
+    const store = createAppStore();
+    const connection = new RTCPeerConnection();
+    const setRemoteDescription = jest.fn(async () => undefined);
+    connection.setRemoteDescription = setRemoteDescription;
+    deleteConnection();
+    setConnection(connection);
+    store.dispatch(connectionSlice.actions.setCreated());
+    store.dispatch(connectionSlice.actions.setSearchCandidates("CLIENT"));
+    store.dispatch(
+      connectionSlice.actions.setCandidatesFound(JSON.stringify(FAKE_OFFER)),
+    );
+    await expect(
+      store.dispatch(connectionServerSetAnswer(FAKE_ANSWER)).unwrap(),
+    ).rejects.toBeTruthy();
   });
 });

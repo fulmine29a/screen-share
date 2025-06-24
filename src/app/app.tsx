@@ -4,6 +4,5 @@ import { routes } from "./routes";
 
 export const App: React.FC = () => {
   const router = useMemo(() => createBrowserRouter(routes), []);
-
   return <RouterProvider router={router} />;
 };

@@ -11,6 +11,9 @@ export const getConnection = () => {
 export const hasConnection = () => !!connection;
 
 export const setConnection = (c: RTCPeerConnection) => {
+  if (hasConnection()) {
+    throw new Error("connection already set");
+  }
   connection = c;
 };
 

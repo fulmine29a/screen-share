@@ -47,12 +47,24 @@ describe("create/close", () => {
     expect(connectionSlice.selectors.failReason(store.getState())).toBeFalsy();
   });
 
+  test("create with wrong status", async () => {
+    connectionInConnectionCreated = undefined;
+    const store = createAppStore();
+    store.dispatch(connectionSlice.actions.setCreated());
+
+    expect(() =>
+      store.dispatch(connectionAppStart()).unwrap(),
+    ).rejects.toBeTruthy();
+    expect(connectionSlice.selectors.failReason(store.getState())).toBeFalsy();
+  });
+
   test("close", async () => {
     const store = createAppStore();
+    deleteConnection();
     setConnection(new RTCPeerConnection());
     store.dispatch(connectionSlice.actions.setFailed("test fail"));
 
-    await store.dispatch(connectionAppStop());
+    await store.dispatch(connectionAppStop()).unwrap();
 
     checkErrors(store, 0);
     expect(hasConnection()).toBeFalsy();
@@ -66,7 +78,7 @@ describe("create/close", () => {
     const store = createAppStore();
     deleteConnection();
 
-    await store.dispatch(connectionAppStop());
+    await store.dispatch(connectionAppStop()).unwrap();
 
     checkErrors(store, 0);
   });

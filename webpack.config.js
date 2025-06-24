@@ -50,6 +50,7 @@ module.exports = {
   },
   devServer: {
     server: "https",
+    historyApiFallback: true,
   },
   devtool: "eval-cheap-module-source-map",
   resolve: {
