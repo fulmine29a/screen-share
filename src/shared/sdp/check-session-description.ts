@@ -1,5 +1,5 @@
-export function checkOffer(offer: string) {
-  let canSubmitClient = true;
+export function checkSessionDescription(offer: string, type: RTCSdpType) {
+  let valid = true;
   let wrongOfferType = false;
 
   try {
@@ -8,11 +8,11 @@ export function checkOffer(offer: string) {
       typeof parsedOffer.sdp == "string" &&
       typeof parsedOffer.type == "string"
     ) {
-      canSubmitClient = !(wrongOfferType = parsedOffer.type != "offer");
+      valid = !(wrongOfferType = parsedOffer.type != type);
     }
   } catch {
-    canSubmitClient = false;
+    valid = false;
   }
 
-  return { canSubmitClient, wrongOfferType };
+  return { valid, wrongOfferType };
 }

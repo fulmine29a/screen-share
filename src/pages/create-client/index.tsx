@@ -1,7 +1,7 @@
 import React, { FormEventHandler, useEffect, useState } from "react";
 import { useAppDispatch } from "../../shared/store/hooks";
-import { useOffer } from "./useOffer";
-import { checkOffer } from "./checkOffer";
+import { useSdpInput } from "../../shared/sdp/use-sdp-input";
+import { checkSessionDescription } from "../../shared/sdp/check-session-description";
 import { connectionCreateClient } from "../../features/connection/connection-create-client";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router";
@@ -12,21 +12,19 @@ export const CreateClientPage: React.FC = () => {
     navigate = useNavigate(),
     [submitted, setSubmitted] = useState(false);
 
-  const {
-    debouncedCanSubmitClient,
-    debouncedWrongOfferType,
-    onChangeOffer,
-    offer,
-  } = useOffer();
+  const { debouncedWrongSdpType, onChangeSdp, sdp, showSdpErrors } =
+    useSdpInput("offer");
 
   useEffect(() => {
     dispatch(appRestart());
   }, []);
 
-  const clientSubmit: FormEventHandler = (e) => {
-    const { canSubmitClient } = checkOffer(offer);
+  const clientSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+    const formData = new FormData(e.currentTarget),
+      offer = formData.get("offer") as string,
+      { valid } = checkSessionDescription(offer, "offer");
 
-    if (canSubmitClient) {
+    if (valid) {
       setSubmitted(true);
 
       dispatch(connectionCreateClient(JSON.parse(atob(offer))));
@@ -34,8 +32,6 @@ export const CreateClientPage: React.FC = () => {
     }
     e.preventDefault();
   };
-
-  const showErrors = !debouncedCanSubmitClient && !!offer;
 
   return (
     <Container as="section" className="my-5">
@@ -50,8 +46,9 @@ export const CreateClientPage: React.FC = () => {
                     <Form.Control
                       as="textarea"
                       rows={5}
-                      onChange={onChangeOffer}
-                      value={offer}
+                      onChange={onChangeSdp}
+                      value={sdp}
+                      name="offer"
                       disabled={submitted}
                     />
                   </Form.Group>
@@ -60,7 +57,7 @@ export const CreateClientPage: React.FC = () => {
                       variant="success"
                       className="me-2"
                       type="submit"
-                      disabled={showErrors || submitted}
+                      disabled={showSdpErrors || submitted}
                     >
                       ОК
                     </Button>
@@ -72,9 +69,9 @@ export const CreateClientPage: React.FC = () => {
               </Col>
             </Row>
           </Card.Text>
-          {showErrors && (
+          {showSdpErrors && (
             <Card.Text className="text-danger mt-2 fst-italic">
-              {debouncedWrongOfferType
+              {debouncedWrongSdpType
                 ? "Это не серверное приглашение"
                 : "Неправильный формат приглашения"}
             </Card.Text>
