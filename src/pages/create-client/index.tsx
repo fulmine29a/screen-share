@@ -6,13 +6,14 @@ import { connectionCreateClient } from "../../features/connection/connection-cre
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router";
 import { appRestart } from "../../features/app";
+import { SHOW_ANSWER_PATH } from "../../app/routes";
 
 export const CreateClientPage: React.FC = () => {
   const dispatch = useAppDispatch(),
     navigate = useNavigate(),
     [submitted, setSubmitted] = useState(false);
 
-  const { debouncedWrongSdpType, onChangeSdp, sdp, showSdpErrors } =
+  const { debouncedWrongSdpType, onChangeSdp, sdp, showSdpErrors, pasteSdp } =
     useSdpInput("offer");
 
   useEffect(() => {
@@ -20,6 +21,7 @@ export const CreateClientPage: React.FC = () => {
   }, []);
 
   const clientSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
     const formData = new FormData(e.currentTarget),
       offer = formData.get("offer") as string,
       { valid } = checkSessionDescription(offer, "offer");
@@ -27,10 +29,10 @@ export const CreateClientPage: React.FC = () => {
     if (valid) {
       setSubmitted(true);
 
-      dispatch(connectionCreateClient(JSON.parse(atob(offer))));
-      navigate("/show-answer");
+      dispatch(connectionCreateClient(JSON.parse(atob(offer)))).then(() => {
+        navigate(SHOW_ANSWER_PATH);
+      });
     }
-    e.preventDefault();
   };
 
   return (
@@ -52,14 +54,20 @@ export const CreateClientPage: React.FC = () => {
                       disabled={submitted}
                     />
                   </Form.Group>
-                  <Form.Group>
+                  <Form.Group className="d-flex gap-2">
                     <Button
                       variant="success"
-                      className="me-2"
                       type="submit"
                       disabled={showSdpErrors || submitted}
                     >
                       ОК
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        pasteSdp();
+                      }}
+                    >
+                      Вставить
                     </Button>
                     <Link to="/" className="btn btn-primary">
                       Назад

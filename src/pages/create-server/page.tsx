@@ -8,6 +8,8 @@ import { useSdpInput } from "../../shared/sdp/use-sdp-input";
 import { Link, useNavigate } from "react-router";
 import { checkSessionDescription } from "../../shared/sdp/check-session-description";
 import { connectionServerSetAnswer } from "../../features/connection/connection-server-set-answer";
+import { ShareButtons } from "../../shared/share-buttons";
+import { CONNECTING_PATH } from "../../app/routes";
 
 export const Page: React.FC = () => {
   const connectionStatus = useAppSelector(connectionSlice.selectors.status),
@@ -37,7 +39,7 @@ export const Page: React.FC = () => {
       setSubmitted(true);
 
       dispatch(connectionServerSetAnswer(JSON.parse(atob(answer))));
-      navigate("/connecting");
+      navigate(CONNECTING_PATH);
     }
     e.preventDefault();
   };
@@ -47,23 +49,7 @@ export const Page: React.FC = () => {
       <Card>
         <Card.Body>
           <Card.Title as="h1">Создание сервера</Card.Title>
-          <Button
-            className="my-3 me-2"
-            size="sm"
-            disabled={!navigator.clipboard}
-            onClick={() => navigator.clipboard.writeText(offer)}
-          >
-            Копировать
-          </Button>
-          <Button
-            size="sm"
-            disabled={!navigator.share}
-            onClick={() => {
-              navigator.share({ text: offer });
-            }}
-          >
-            Share
-          </Button>
+          <ShareButtons text={offer} />
           <Card.Text as="small" className="font-monospace text-secondary">
             {offer}
           </Card.Text>
@@ -75,7 +61,7 @@ export const Page: React.FC = () => {
                 className="font-monospace"
                 rows={5}
                 value={sdp}
-                name="aswer"
+                name="answer"
                 onChange={onChangeSdp}
               />
             </Form.Group>
