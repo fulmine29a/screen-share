@@ -8,7 +8,7 @@ export type ConnectionState =
   | { status: "FAILED"; failReason: string }
   | ({
       status: "CANDIDATES_FOUND";
-      localDescription: string;
+      localDescription: RTCSessionDescriptionInit;
     } & Role)
   | { status: "CONNECTED" }
   | { status: "DISCONNECTED" }

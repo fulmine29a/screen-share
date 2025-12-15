@@ -14,9 +14,7 @@ export const connectionSetCandidatesEventListener = createAppThunk(
         try {
           if (!candidate) {
             dispatch(
-              connectionSlice.actions.setCandidatesFound(
-                JSON.stringify(this.localDescription),
-              ),
+              connectionSlice.actions.setCandidatesFound(this.localDescription),
             );
           }
         } catch (e) {

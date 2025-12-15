@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Container } from "react-bootstrap";
 import { Link } from "react-router";
-import { CREATE_CLIENT_PATH, CREATE_SERVER_PATH } from "../app/routes";
+import { CREATE_CLIENT_PATH, CREATE_SERVER_PATH } from "../app/router";
 
 export const StartPage: React.FC = () => {
   return (

@@ -18,6 +18,7 @@ import { connectionNegotiationAnswerMessage } from "../connection/connection-neg
 import { connectionSlice } from "../../entities/connection/slice";
 import { cantRunParallel } from "../../shared/cant-run-parallel";
 import { takeLeading } from "../../shared/take-leading";
+import { CONNECTED_PATH, router } from "../../app/router";
 
 export const appStart = createAppThunk(
   "appStart",
@@ -58,6 +59,10 @@ export const appControlChannelMessage = createAppThunk(
     }
   },
 );
+
+export const appConnected = createAppThunk("appConnected", async () => {
+  router.navigate(CONNECTED_PATH);
+});
 
 export const appSendControlChannelMessage = createAppThunk(
   "appSendControlChannelMessage",

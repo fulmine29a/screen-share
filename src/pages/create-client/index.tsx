@@ -6,7 +6,7 @@ import { connectionCreateClient } from "../../features/connection/connection-cre
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router";
 import { appRestart } from "../../features/app";
-import { SHOW_ANSWER_PATH } from "../../app/routes";
+import { SHOW_ANSWER_PATH } from "../../app/router";
 
 export const CreateClientPage: React.FC = () => {
   const dispatch = useAppDispatch(),

@@ -15,6 +15,8 @@ import { connectionServerSetAnswer } from "../connection-server-set-answer";
 import { connectionSetStatusEventListener } from "../connection-set-status-event-listener";
 import { connectionSetCandidatesEventListener } from "../connection-set-candidates-event-listener";
 
+jest.mock("../../app/index");
+
 describe("connectionSetCandidatesEventListener", () => {
   test("normal flow", async () => {
     const connection = new RTCPeerConnection();
@@ -78,9 +80,11 @@ describe("connectionSetStatusEventListener", () => {
     setConnection(connection);
     store.dispatch(connectionSetStatusEventListener());
     store.dispatch(connectionSlice.actions.setSearchCandidates("SERVER"));
-    store.dispatch(
-      connectionSlice.actions.setCandidatesFound(JSON.stringify(FAKE_OFFER)),
-    );
+    store.dispatch(connectionSlice.actions.setCandidatesFound(FAKE_OFFER));
+
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { appConnected } = require("../../app/index.ts");
+    (appConnected as jest.Mock).mockImplementation(() => ({ type: "empty" }));
 
     const res = {} as Record<RTCPeerConnectionState, ConnectionState["status"]>;
 
@@ -127,16 +131,33 @@ describe("connectionSetStatusEventListener", () => {
     checkErrors(store, 1);
   });
 
-  test("connectionSetStatusEventListener reconnect", () => {
+  test("must call appConnected", () => {
     const store = createAppStore();
     const connection = new RTCPeerConnection();
     deleteConnection();
     setConnection(connection);
     store.dispatch(connectionSetStatusEventListener());
     store.dispatch(connectionSlice.actions.setSearchCandidates("SERVER"));
-    store.dispatch(
-      connectionSlice.actions.setCandidatesFound(JSON.stringify(FAKE_OFFER)),
-    );
+    store.dispatch(connectionSlice.actions.setCandidatesFound(FAKE_OFFER));
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    connection.connectionState = "connected";
+
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { appConnected } = require("../../app/index.ts");
+    const event = new Event("connectionstatechange");
+    connection.dispatchEvent(event);
+    expect(appConnected).toHaveBeenCalledTimes(1);
+  });
+
+  test("reconnect", () => {
+    const store = createAppStore();
+    const connection = new RTCPeerConnection();
+    deleteConnection();
+    setConnection(connection);
+    store.dispatch(connectionSetStatusEventListener());
+    store.dispatch(connectionSlice.actions.setSearchCandidates("SERVER"));
+    store.dispatch(connectionSlice.actions.setCandidatesFound(FAKE_OFFER));
     store.dispatch(connectionSlice.actions.setConnected());
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -159,6 +180,10 @@ describe("connectionSetStatusEventListener", () => {
       connectionSlice.selectors.status(store.getState()),
     ).toBe<ConnectionStatus>("CONNECTED");
 
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { appConnected } = require("../../app/index.ts");
+    expect(appConnected).not.toHaveBeenCalled();
+
     checkErrors(store, 0);
   });
 });
@@ -173,9 +198,7 @@ describe("connectionServerSetAnswer", () => {
     setConnection(connection);
     store.dispatch(connectionSlice.actions.setCreated());
     store.dispatch(connectionSlice.actions.setSearchCandidates("SERVER"));
-    store.dispatch(
-      connectionSlice.actions.setCandidatesFound(JSON.stringify(FAKE_OFFER)),
-    );
+    store.dispatch(connectionSlice.actions.setCandidatesFound(FAKE_OFFER));
     await store.dispatch(connectionServerSetAnswer(FAKE_ANSWER));
     checkErrors(store, 0);
     expect(setRemoteDescription).toHaveBeenCalledWith(FAKE_ANSWER);
@@ -189,9 +212,7 @@ describe("connectionServerSetAnswer", () => {
     setConnection(connection);
     store.dispatch(connectionSlice.actions.setCreated());
     store.dispatch(connectionSlice.actions.setSearchCandidates("CLIENT"));
-    store.dispatch(
-      connectionSlice.actions.setCandidatesFound(JSON.stringify(FAKE_OFFER)),
-    );
+    store.dispatch(connectionSlice.actions.setCandidatesFound(FAKE_OFFER));
     await expect(
       store.dispatch(connectionServerSetAnswer(FAKE_ANSWER)).unwrap(),
     ).rejects.toBeTruthy();

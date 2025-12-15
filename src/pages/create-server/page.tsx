@@ -9,7 +9,7 @@ import { Link, useNavigate } from "react-router";
 import { checkSessionDescription } from "../../shared/sdp/check-session-description";
 import { connectionServerSetAnswer } from "../../features/connection/connection-server-set-answer";
 import { ShareButtons } from "../../shared/share-buttons";
-import { CONNECTING_PATH } from "../../app/routes";
+import { CONNECTING_PATH } from "../../app/router";
 
 export const Page: React.FC = () => {
   const connectionStatus = useAppSelector(connectionSlice.selectors.status),
@@ -24,7 +24,9 @@ export const Page: React.FC = () => {
   );
 
   const offer = btoa(
-    connectionSlice.selectors.localDescription(store.getState()) || "",
+    JSON.stringify(
+      connectionSlice.selectors.localDescription(store.getState()) || "",
+    ),
   );
 
   const { sdp, showSdpErrors, onChangeSdp, debouncedWrongSdpType, pasteSdp } =

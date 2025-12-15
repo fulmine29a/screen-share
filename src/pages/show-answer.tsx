@@ -4,7 +4,7 @@ import { useAppSelector } from "../shared/store/hooks";
 import { connectionSlice } from "../entities/connection/slice";
 import { useNavigate } from "react-router";
 import { FullScreenLoader } from "../widgets/streams/full-screen-loader";
-import { CREATE_CLIENT_PATH } from "../app/routes";
+import { CREATE_CLIENT_PATH } from "../app/router";
 import { ShareButtons } from "../shared/share-buttons";
 
 export const ShowAnswerPage: React.FC = () => {

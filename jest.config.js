@@ -8,6 +8,7 @@ module.exports = {
     "./__mock__/rtc-ice-candidate.js",
     "./__mock__/media-stream-track.js",
     "./__mock__/media-stream.js",
+    "./__mock__/text-encoder.js",
   ],
   clearMocks: true,
 };

@@ -24,7 +24,10 @@ export const connectionSlice = createSlice({
         role: payload,
       } as const;
     },
-    setCandidatesFound: (state, { payload }: PayloadAction<string | null>) => {
+    setCandidatesFound: (
+      state,
+      { payload }: PayloadAction<RTCSessionDescriptionInit | null>,
+    ) => {
       if (state.status != "SEARCH_FOR_CANDIDATES") {
         throw new Error("attempt to set candidates from the wrong status");
       }

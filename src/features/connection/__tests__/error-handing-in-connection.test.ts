@@ -34,9 +34,7 @@ describe.each([
     setInitialStatus: (dispatch: AppDispatch) => {
       dispatch(connectionSlice.actions.setCreated());
       dispatch(connectionSlice.actions.setSearchCandidates("SERVER"));
-      dispatch(
-        connectionSlice.actions.setCandidatesFound(JSON.stringify(FAKE_OFFER)),
-      );
+      dispatch(connectionSlice.actions.setCandidatesFound(FAKE_OFFER));
     },
   },
 ])(
